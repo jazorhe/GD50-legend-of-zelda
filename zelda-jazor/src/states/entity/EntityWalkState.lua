@@ -23,14 +23,14 @@ function EntityWalkState:init(entity, dungeon)
 end
 
 function EntityWalkState:update(dt)
-    
+
     -- assume we didn't hit a wall
     self.bumped = false
 
     if self.entity.direction == 'left' then
         self.entity.x = self.entity.x - self.entity.walkSpeed * dt
-        
-        if self.entity.x <= MAP_RENDER_OFFSET_X + TILE_SIZE then 
+
+        if self.entity.x <= MAP_RENDER_OFFSET_X + TILE_SIZE then
             self.entity.x = MAP_RENDER_OFFSET_X + TILE_SIZE
             self.bumped = true
         end
@@ -44,14 +44,14 @@ function EntityWalkState:update(dt)
     elseif self.entity.direction == 'up' then
         self.entity.y = self.entity.y - self.entity.walkSpeed * dt
 
-        if self.entity.y <= MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2 then 
+        if self.entity.y <= MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2 then
             self.entity.y = MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2
             self.bumped = true
         end
     elseif self.entity.direction == 'down' then
         self.entity.y = self.entity.y + self.entity.walkSpeed * dt
 
-        local bottomEdge = VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) 
+        local bottomEdge = VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE)
             + MAP_RENDER_OFFSET_Y - TILE_SIZE
 
         if self.entity.y + self.entity.height >= bottomEdge then
@@ -66,7 +66,7 @@ function EntityWalkState:processAI(params, dt)
     local directions = {'left', 'right', 'up', 'down'}
 
     if self.moveDuration == 0 or self.bumped then
-        
+
         -- set an initial move duration and direction
         self.moveDuration = math.random(5)
         self.entity.direction = directions[math.random(#directions)]
@@ -91,8 +91,8 @@ function EntityWalkState:render()
     local anim = self.entity.currentAnimation
     love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
         math.floor(self.entity.x - self.entity.offsetX), math.floor(self.entity.y - self.entity.offsetY))
-    
-    -- love.graphics.setColor(255, 0, 255, 255)
+
+    -- love.graphics.setColor(1, 0, 1, 1)
     -- love.graphics.rectangle('line', self.entity.x, self.entity.y, self.entity.width, self.entity.height)
-    -- love.graphics.setColor(255, 255, 255, 255)
+    -- love.graphics.setColor(1, 1, 1, 1)
 end
