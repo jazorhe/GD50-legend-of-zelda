@@ -1,11 +1,3 @@
---[[
-    GD50
-    Legend of Zelda
-
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
-]]
-
 Dungeon = Class{}
 
 function Dungeon:init(player)
@@ -114,12 +106,12 @@ function Dungeon:finishShifting()
     self.currentRoom = self.nextRoom
     self.nextRoom = nil
     self.currentRoom.adjacentOffsetX = 0
-    self.currentRoom.adjacentOffsetY = 0 
+    self.currentRoom.adjacentOffsetY = 0
 end
 
 function Dungeon:update(dt)
     -- pause updating if we're in the middle of shifting
-    if not self.shifting then    
+    if not self.shifting then
         self.currentRoom:update(dt)
     else
         -- still update the player animation if we're shifting rooms
@@ -134,7 +126,7 @@ function Dungeon:render()
     end
 
     self.currentRoom:render()
-    
+
     if self.nextRoom then
         self.nextRoom:render()
     end

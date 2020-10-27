@@ -128,13 +128,13 @@ NES Homebrew
 ### Objectives
 -   [ ] Read and understand all of the Legend of Zelda source code from Lecture 5.
     -   [x] [`main.lua`](#mainlua)
-    -   [ ] [`Dependencies.lua`, `constants.lua` and `Util.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#dependencieslua-constantslua-and-utillua)
-    -   [ ] [`Entity.lua`, `entity_def.lua`, `GameObject.lua` and `game_objects.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#entitylua-entity_deflua-gameobjectlua-and-game_objectslua)
-    -   [ ] [`Player.lua`, `Animation.lua` and `Hitbox.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#playerlua-animationlua-and-hitboxlua)
-    -   [ ] [`Projectile.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#projectilelua)
-    -   [ ] [`StateMachine.lua` and GameStates](#https://github.com/jazorhe/GD50-legend-of-zelda#statemachinelua-and-gamestates)
-    -   [ ] [PlayerStates and EntityStates](#https://github.com/jazorhe/GD50-legend-of-zelda#playerstates-and-entitystates)
-    -   [ ] [World: `Doorway.lua`, `Dungeon.lua` and `Room.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#world-doorwaylua-dungeonlua-and-roomlua)
+    -   [x] [`Dependencies.lua`, `constants.lua` and `Util.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#dependencieslua-constantslua-and-utillua)
+    -   [x] [`Entity.lua`, `entity_def.lua`, `GameObject.lua` and `game_objects.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#entitylua-entity_deflua-gameobjectlua-and-game_objectslua)
+    -   [x] [`Player.lua`, `Animation.lua` and `Hitbox.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#playerlua-animationlua-and-hitboxlua)
+    -   [x] [`Projectile.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#projectilelua)
+    -   [x] [`StateMachine.lua` and GameStates](#https://github.com/jazorhe/GD50-legend-of-zelda#statemachinelua-and-gamestates)
+    -   [x] [PlayerStates and EntityStates](#https://github.com/jazorhe/GD50-legend-of-zelda#playerstates-and-entitystates)
+    -   [x] [World: `Doorway.lua`, `Dungeon.lua` and `Room.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#world-doorwaylua-dungeonlua-and-roomlua)
 
 
 -   [ ] Implement hearts that sometimes drop from enemies at random, which will heal the player for a full heart when picked up (consumed).
@@ -148,16 +148,127 @@ NES Homebrew
 
 ### Code Reading
 #### `main.lua`
-As we have seen in previous assignments, `main.lua` has been designed to be the minimum script and only have
+As we have seen in previous assignments, `main.lua` has been designed to be minimum and only have the essential like declaring window, resizing, keyboard handling, and a simple update, a simple draw function that passes the heavy-lifting to other classes.
+
 
 #### `Dependencies.lua`, `constants.lua` and `Util.lua`
-#### `Entity.lua`, `entity_def.lua`, `GameObject.lua` and `game_objects.lua`
-#### `Player.lua`, `Animation.lua` and `Hitbox.lua`
-#### `Projectile.lua`
-#### `StateMachine.lua` and GameStates
-#### PlayerStates and EntityStates
-#### World: `Doorway.lua`, `Dungeon.lua` and `Room.lua`
+-   `Dependencies.lua`: Same old story, let's also move gStateMachines here.
+-   `constant.lua`: Variables for Map offset and Map sizes
 
+```lua
+MAP_WIDTH = VIRTUAL_WIDTH / TILE_SIZE - 2
+MAP_HEIGHT = math.floor(VIRTUAL_HEIGHT / TILE_SIZE) - 2
+
+MAP_RENDER_OFFSET_X = (VIRTUAL_WIDTH - (MAP_WIDTH * TILE_SIZE)) / 2
+MAP_RENDER_OFFSET_Y = (VIRTUAL_HEIGHT - (MAP_HEIGHT * TILE_SIZE)) / 2
+```
+
+#### `Entity.lua`, `entity_def.lua`, `GameObject.lua` and `game_objects.lua`
+AABB with some slight shrinkage of the box on the top side for perspective.
+
+```lua
+function Entity:collides(target)
+    return not (self.x + self.width < target.x or self.x > target.x + target.width or
+                self.y + self.height < target.y or self.y > target.y + target.height)
+end
+```
+
+
+Below are really nice abstraction for an entity's behaviour:
+
+```lua
+function Entity:changeState(name)
+    self.stateMachine:change(name)
+end
+
+function Entity:changeAnimation(name)
+    self.currentAnimation = self.animations[name]
+end
+```
+
+
+Also allow entity to have an AI:
+
+```lua
+function Entity:processAI(params, dt)
+    self.stateMachine:processAI(params, dt)
+end
+```
+
+
+Game Object rendering in short but simple instruction:
+
+```lua
+function GameObject:render(adjacentOffsetX, adjacentOffsetY)
+    love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[self.state].frame or self.frame],
+        self.x + adjacentOffsetX, self.y + adjacentOffsetY)
+end
+```
+
+
+#### `Player.lua`, `Animation.lua` and `Hitbox.lua`
+These have now become simple classes, especially the Player class, it would work like it has inherited from the entity class, it is probably a good idea to also put player into the `entity_defs.lua`. Because the State Machine handles all interactive behaviours of the player (at least in this example).
+
+
+#### `Projectile.lua`
+This is for implementing pot throwing in the assignment.
+
+
+#### `StateMachine.lua` and GameStates
+Nothing much has changed except stateMachine also have the ability to handle AI processing:
+
+```lua
+function StateMachine:processAI(params, dt)
+	self.current:processAI(params, dt)
+end
+```
+
+
+#### PlayerStates and EntityStates
+Also simple and elegant because everything has been abstracted away.
+
+<https://love2d.org/wiki/love.graphics.push>
+```lua
+love.graphics.push()
+self.dungeon:render()
+love.graphics.pop()
+```
+
+#### World: `Doorway.lua`, `Dungeon.lua` and `Room.lua`
+`Doorway.lua` is simply drawing the doors.
+
+`Dungeon.lua` is for screen scrolling during room translation. `Dungeon.lua` has Events, Tweening, camera translations and reset.
+
+`Room.lua` holds entites, gameobjects, doors and tiles. A bit like the level we had in mario. `Room.lua` also deals with Stencils.
+
+```lua
+-- stencil out the door arches so it looks like the player is going through
+love.graphics.stencil(function()
+    -- left
+    love.graphics.rectangle('fill', -TILE_SIZE - 6, MAP_RENDER_OFFSET_Y + (MAP_HEIGHT / 2) * TILE_SIZE - TILE_SIZE,
+        TILE_SIZE * 2 + 6, TILE_SIZE * 2)
+
+    -- right
+    love.graphics.rectangle('fill', MAP_RENDER_OFFSET_X + (MAP_WIDTH * TILE_SIZE) - 6,
+        MAP_RENDER_OFFSET_Y + (MAP_HEIGHT / 2) * TILE_SIZE - TILE_SIZE, TILE_SIZE * 2 + 6, TILE_SIZE * 2)
+
+    -- top
+    love.graphics.rectangle('fill', MAP_RENDER_OFFSET_X + (MAP_WIDTH / 2) * TILE_SIZE - TILE_SIZE,
+        -TILE_SIZE - 6, TILE_SIZE * 2, TILE_SIZE * 2 + 12)
+
+    --bottom
+    love.graphics.rectangle('fill', MAP_RENDER_OFFSET_X + (MAP_WIDTH / 2) * TILE_SIZE - TILE_SIZE,
+        VIRTUAL_HEIGHT - TILE_SIZE - 6, TILE_SIZE * 2, TILE_SIZE * 2 + 12)
+end, 'replace', 1)
+
+love.graphics.setStencilTest('less', 1)
+
+if self.player then
+    self.player:render()
+end
+
+love.graphics.setStencilTest()
+```
 
 ### Regaining Health
 *Implement hearts that sometimes drop from vanquished enemies at random, which will heal the player for a full heart when picked up (consumed). Much of this we’ve already done in Super Mario Bros., so feel free to reuse some of the code in there! Recall that all `Entities` have a `health` field, including the `Player`. The `Player`’s health is measured numerically but represented via hearts; note that he can have half-hearts, which means that each individual heart should be worth 2 points of damage. Therefore, when we want to heal the `Player` for a full heart, be sure to increment health by 2, but be careful it doesn’t go above the visual cap of 6, lest we appear to have a bug! Defining a `GameObject` that has an `onConsume` callback is probably of interest here, which you can refer back to Super Mario Bros. to get a sense of, though feel free to implement however best you see fit!*

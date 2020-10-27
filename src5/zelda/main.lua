@@ -2,7 +2,7 @@ function love.load()
     math.randomseed(os.time())
     love.window.setTitle('Legend of Zelda')
     love.graphics.setDefaultFilter('nearest', 'nearest')
-    
+
     require 'src/Dependencies'
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
@@ -12,15 +12,9 @@ function love.load()
     })
 
     love.graphics.setFont(gFonts['small'])
-
-    gStateMachine = StateMachine {
-        ['start'] = function() return StartState() end,
-        ['play'] = function() return PlayState() end,
-        ['game-over'] = function() return GameOverState() end
-    }
+    gSounds['music']:setLooping(true)
     gStateMachine:change('start')
 
-    gSounds['music']:setLooping(true)
     gSounds['music']:play()
 
     love.keyboard.keysPressed = {}

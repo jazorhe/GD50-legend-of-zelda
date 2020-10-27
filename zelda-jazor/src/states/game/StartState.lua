@@ -1,11 +1,3 @@
---[[
-    GD50
-    Legend of Zelda
-
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
-]]
-
 StartState = Class{__includes = BaseState}
 
 function StartState:init()
@@ -33,7 +25,7 @@ function StartState:render()
 
     -- love.graphics.setFont(gFonts['gothic-medium'])
     -- love.graphics.printf('Legend of', 0, VIRTUAL_HEIGHT / 2 - 32, VIRTUAL_WIDTH, 'center')
-
+    --
     -- love.graphics.setFont(gFonts['gothic-large'])
     -- love.graphics.printf('50', 0, VIRTUAL_HEIGHT / 2 - 16, VIRTUAL_WIDTH, 'center')
 

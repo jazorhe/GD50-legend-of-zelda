@@ -71,3 +71,9 @@ gSounds = {
     ['hit-player'] = love.audio.newSource('sounds/hit_player.wav', 'static'),
     ['door'] = love.audio.newSource('sounds/door.wav', 'static')
 }
+
+gStateMachine = StateMachine {
+    ['start'] = function() return StartState() end,
+    ['play'] = function() return PlayState() end,
+    ['game-over'] = function() return GameOverState() end
+}
