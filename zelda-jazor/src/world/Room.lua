@@ -39,6 +39,7 @@ function Room:init(player)
         heart.onCollide = function()
             if heart.inPlay then
                 heart.inPlay = false
+                gSounds['heal']:play()
                 self.player:damage(-1)
             end
         end
