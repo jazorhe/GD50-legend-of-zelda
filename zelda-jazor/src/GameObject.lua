@@ -50,11 +50,18 @@ function GameObject:render(adjacentOffsetX, adjacentOffsetY)
         self.x + adjacentOffsetX, self.y + adjacentOffsetY, 0, self.scale)
     end
 
-    if DEBUG and self.type == 'heart' then
-        love.graphics.setFont(gFonts['small'])
-        love.graphics.setColor(1, 0, 1, 1)
-        love.graphics.print('heart: ' .. tostring(self.display), 20, VIRTUAL_HEIGHT - 15)
-        love.graphics.setColor(1, 1, 1, 1)
+    if DEBUG then
+        if DEBUG_TYPE == 'heart' and self.type == 'heart' then
+            love.graphics.setFont(gFonts['small'])
+            love.graphics.setColor(1, 0, 1, 1)
+            love.graphics.print('heart: ' .. tostring(self.display), 20, VIRTUAL_HEIGHT - 15)
+            love.graphics.setColor(1, 1, 1, 1)
+        elseif DEBUT_TYPE == 'pots' and self.type == 'pots' then
+            love.graphics.setFont(gFonts['small'])
+            love.graphics.setColor(1, 0, 1, 1)
+            love.graphics.print('pot: ' .. tostring(self.display), 20, VIRTUAL_HEIGHT - 15)
+            love.graphics.setColor(1, 1, 1, 1)
+        end
     end
 end
 

@@ -6,7 +6,6 @@ Lecture Notes: [Lecture 5](https://github.com/jazorhe/GD50-legend-of-zelda/blob/
 
 <img src="img/title.png" width="700">
 
-<br>
 
 ### Overview
 -   [Our Goal](#our-goal)
@@ -15,6 +14,8 @@ Lecture Notes: [Lecture 5](https://github.com/jazorhe/GD50-legend-of-zelda/blob/
 -   [Submission](#submission)
 -   [Useful Links](#useful-links)
 
+
+<br>
 
 ## Our Goal
 Our goal this time is to create a game demo with the same top-down perspective world. The game includes auto generated dungeon rooms that will fill up the entire screen size and allow player to travel back and forth between the rooms. There will be enemies in the room to fight, and also switches in the room to unlock doors. Player will have a certain amount of health and when being attacked by an enemy, the player will lose health points and when health reaches 0, it is game over.
@@ -122,24 +123,16 @@ In the above example, besides the `entity_defs.lua`, one could also have a `weap
 
 ### Other Notes
 NES Homebrew
-<http://wiki.nesdev.com/w/index.php/Nesdev_Wiki>
-<http://wiki.nesdev.com/w/index.php/Programming_guide>
-<http://wiki.nesdev.com/w/index.php/Installing_CC65>
+<http://wiki.nesdev.com/w/index.php/Nesdev_Wiki><br>
+<http://wiki.nesdev.com/w/index.php/Programming_guide><br>  
+<http://wiki.nesdev.com/w/index.php/Installing_CC65><br>
 
 
 <br>
 
-
-<ul class="ck ck-todolist">
-  <li class="ck-todolist__item">
-    <span class="ck-todolist__item-checkbox"></span>
-    <span class="ck-todolist__item-content">Create a strong device passcode</span>
-  </li>
-</ul>
-
 ## Assignment
 ### Objectives
--   [x] Read and understand all of the Legend of Zelda source code from Lecture 5.
+-   [x] [**Code Reading**](#code-reading)Read and understand all of the Legend of Zelda source code from Lecture 5.
     -   [x] [`main.lua`](#mainlua)
     -   [x] [`Dependencies.lua`, `constants.lua` and `Util.lua`](#dependencieslua-constantslua-and-utillua)
     -   [x] [`Entity.lua`, `entity_def.lua`, `GameObject.lua` and `game_objects.lua`](#entitylua-entity_deflua-gameobjectlua-and-game_objectslua)
@@ -150,11 +143,11 @@ NES Homebrew
     -   [x] [World: `Doorway.lua`, `Dungeon.lua` and `Room.lua`](#world-doorwaylua-dungeonlua-and-roomlua)
 
 
--   [x] [Regaining Health](#regaining-health): Implement hearts that sometimes drop from enemies at random, which will heal the player for a full heart when picked up (consumed).
+-   [x] [**Regaining Health**](#regaining-health): Implement hearts that sometimes drop from enemies at random, which will heal the player for a full heart when picked up (consumed).
 
--   [ ] [Pots and Carrying Pots](#pots-and-carrying-pots): Add pots to the game world (from the tile sheet) at random that the player can pick up, at which point their animation will change to reflect them carrying the pot (shown in the character sprite sheets). The player should not be able to swing their sword when in this state.
+-   [ ] [**Pots and Carrying Pots**](#pots-and-carrying-pots): Add pots to the game world (from the tile sheet) at random that the player can pick up, at which point their animation will change to reflect them carrying the pot (shown in the character sprite sheets). The player should not be able to swing their sword when in this state.
 
--   [ ] [Throwing Pots](#throwing-pots): When carrying a pot, the player should be able to throw the pot. When thrown, the pot will travel in a straight line based on where the player is looking. When it collides with a wall, travels more than four tiles, or collides with an enemy, it should disappear. When it collides with an enemy, it should do 1 point of damage to that enemy as well.
+-   [ ] [**Throwing Pots**](#throwing-pots): When carrying a pot, the player should be able to throw the pot. When thrown, the pot will travel in a straight line based on where the player is looking. When it collides with a wall, travels more than four tiles, or collides with an enemy, it should disappear. When it collides with an enemy, it should do 1 point of damage to that enemy as well.
 
 
 <br>
@@ -286,6 +279,13 @@ love.graphics.setStencilTest()
 ### Regaining Health
 *Implement hearts that sometimes drop from vanquished enemies at random, which will heal the player for a full heart when picked up (consumed). Much of this we’ve already done in Super Mario Bros., so feel free to reuse some of the code in there! Recall that all `Entities` have a `health` field, including the `Player`. The `Player`’s health is measured numerically but represented via hearts; note that he can have half-hearts, which means that each individual heart should be worth 2 points of damage. Therefore, when we want to heal the `Player` for a full heart, be sure to increment health by 2, but be careful it doesn’t go above the visual cap of 6, lest we appear to have a bug! Defining a `GameObject` that has an `onConsume` callback is probably of interest here, which you can refer back to Super Mario Bros. to get a sense of, though feel free to implement however best you see fit!*
 
+**The update needs to do the following:**:
+-   Randomly spawn heart when an enemy is killed
+-   When player collides with the heart, the heart heals the player
+-   The heart then disappear
+
+
+**How I achieved**:
 -   Added `EntityDeadState.lua`
 -   `EntityDeadState:init()`:simple
 -   `EntityDeadState:enter()`: use `Event.dispatch()`
@@ -297,11 +297,12 @@ love.graphics.setStencilTest()
 -   Define `onCollide()` or `onConsume()` for the heart
 -   Deal with rendering
 
-#### Challenge:
--   draw spawned hearts smaller
+
+**Challenge myself**:
+-   Draw spawned hearts smaller
     -   Add scale factor in `game_objects.lua` and render with it!
 
--   hearts will have a time to live and will disappear after a while
+-   Hearts will have a time to live and will disappear after a while
     -   **Important**: `if not xxx == nil then` is not going to work because nil is not a value, nil can be treated as false, so above statement actually has opposite result
     -   can add `GameObject:flash()`
 
@@ -317,9 +318,34 @@ love.graphics.setStencilTest()
 *Add pots to the game world (from the tile sheet) at random that the player can pick up, at which point their animation will change to reflect them carrying the pot (shown in the character sprite sheets). The `player` should not be able to swing their sword when in this state. In most of the Zelda titles, the hero is able to lift pots over his head, which he can then walk around with and throw at walls or enemies as he chooses. Implement this same functionality; you’ll need to incorporate pot `GameObject`s, which should be collidable such that the Player can’t walk through them. When he presses a key in front of them, perhaps `enter` or `return`, he should lift the pot above his head with an animation and then transition into a state where he walks around with the pot above his head. This will entail not only adding some new states for the `Player` but also ensuring a link exists (pun intended) between a pot and the character such that the pot always tracks the player’s position so it can be rendered above his head. Be sure the `Player` cannot swing his sword while in this state, as his hands are full!*
 
 
+**The update needs to do the following:**:
+-   Randomly spawn pots on ground in room
+    -   Pots are collidable
+-   Player can pick up the pot
+    -   Player then needs to change animation (state) to lift
+    -   Player then needs to change animation (state) when walking
+    -   Player CANNOT swing sword when carrying the pot
+    -   Pot will follow Player
+-   Player can throw the pot
+    -   Throwing is covered in next section
+
+Pots are in `tilesheet.png` as below:
+
+<img src="img/pots.png" width="200"><br>
+<img src="zelda-jazor/graphics/character_pot_lift.png" width="150">
+<img src="zelda-jazor/graphics/character_pot_walk.png" width="200">
+
+**How I achieved**:
+**Challenge myself**:
+
+
 ### Throwing Pots
 *When carrying a pot, the player should be able to throw the pot. When thrown, the pot will travel in a straight line based on where the player is looking. When it collides with a wall, travels more than four tiles, or collides with an enemy, it should disappear. When it collides with an enemy, it should do 1 point of damage to that enemy as well. Carrying the pot is one thing; the next step would be to be able to use the pot as a weapon! Allow the `Player` to throw the pot, effectively turning it into a projectile, and ensure it travels in a straight line depending on where the `Player` is facing when they throw it. When it collides with a wall, an enemy, or if it travels farther than four tiles in that direction, the pot should shatter, disappearing (although an actual shatter animation is optional). If it collides with an enemy, ensure the pot does 1 point of damage. There are many ways you can achieve this; think about how you can extend `GameObject` to fit this use case, perhaps adding a `projectile` field and therefore a `dx` or `dy` to the `GameObject` to allow it to have traveling functionality. Perhaps include a `:fire` method as part of `GameObject` that will trigger this behavior as by passing in said `dx` and `dy` instead. The choice is yours, but `GameObject` is flexible enough to make it work!*
 
+
+**The update needs to do the following:**:
+**How I achieved**:
+**Challenge myself**:
 
 ## Submission
 

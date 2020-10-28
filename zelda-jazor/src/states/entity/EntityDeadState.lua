@@ -16,7 +16,7 @@ function EntityDeadState:enter(params)
     -- end
 
     self.entity.dead = true
-    if true then
+    if math.random(3) == 1 then
         Event.dispatch('spawn-heart', self.entity)
     end
 
