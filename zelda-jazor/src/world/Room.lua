@@ -32,6 +32,23 @@ function Room:init(player)
     -- used for drawing when this room is the next room, adjacent to the active
     self.adjacentOffsetX = 0
     self.adjacentOffsetY = 0
+
+    Event.on('spawn-heart', function(entity)
+        local heart = GameObject(GAME_OBJECT_DEFS['heart'], entity.x, entity.y)
+
+        heart.onCollide = function()
+            if heart.inPlay then
+                heart.inPlay = false
+                self.player:damage(-1)
+            end
+        end
+
+        table.insert(self.objects, heart)
+
+
+    end)
+
+
 end
 
 --[[
@@ -61,7 +78,8 @@ function Room:generateEntities()
 
         self.entities[i].stateMachine = StateMachine {
             ['walk'] = function() return EntityWalkState(self.entities[i]) end,
-            ['idle'] = function() return EntityIdleState(self.entities[i]) end
+            ['idle'] = function() return EntityIdleState(self.entities[i]) end,
+            ['dead'] = function() return EntityDeadState(self.entities[i]) end
         }
 
         self.entities[i]:changeState('walk')
@@ -148,8 +166,8 @@ function Room:update(dt)
         local entity = self.entities[i]
 
         -- remove entity from the table if health is <= 0
-        if entity.health <= 0 then
-            entity.dead = true
+        if entity.health <= 0 and not entity.dead then
+            entity:changeState('dead')
         elseif not entity.dead then
             entity:processAI({room = self}, dt)
             entity:update(dt)
@@ -194,7 +212,7 @@ function Room:render()
     end
 
     for k, object in pairs(self.objects) do
-        object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        if object.inPlay then object:render(self.adjacentOffsetX, self.adjacentOffsetY) end
     end
 
     for k, entity in pairs(self.entities) do

@@ -126,18 +126,18 @@ NES Homebrew
 
 ## Assignment
 ### Objectives
--   [ ] Read and understand all of the Legend of Zelda source code from Lecture 5.
-    -   [x] [`main.lua`](#mainlua)
-    -   [x] [`Dependencies.lua`, `constants.lua` and `Util.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#dependencieslua-constantslua-and-utillua)
-    -   [x] [`Entity.lua`, `entity_def.lua`, `GameObject.lua` and `game_objects.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#entitylua-entity_deflua-gameobjectlua-and-game_objectslua)
-    -   [x] [`Player.lua`, `Animation.lua` and `Hitbox.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#playerlua-animationlua-and-hitboxlua)
-    -   [x] [`Projectile.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#projectilelua)
-    -   [x] [`StateMachine.lua` and GameStates](#https://github.com/jazorhe/GD50-legend-of-zelda#statemachinelua-and-gamestates)
-    -   [x] [PlayerStates and EntityStates](#https://github.com/jazorhe/GD50-legend-of-zelda#playerstates-and-entitystates)
-    -   [x] [World: `Doorway.lua`, `Dungeon.lua` and `Room.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#world-doorwaylua-dungeonlua-and-roomlua)
+-   :white_check_mark: Read and understand all of the Legend of Zelda source code from Lecture 5.
+    -   :white_check_mark: [`main.lua`](#mainlua)
+    -   :white_check_mark: [`Dependencies.lua`, `constants.lua` and `Util.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#dependencieslua-constantslua-and-utillua)
+    -   :white_check_mark: [`Entity.lua`, `entity_def.lua`, `GameObject.lua` and `game_objects.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#entitylua-entity_deflua-gameobjectlua-and-game_objectslua)
+    -   :white_check_mark: [`Player.lua`, `Animation.lua` and `Hitbox.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#playerlua-animationlua-and-hitboxlua)
+    -   :white_check_mark: [`Projectile.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#projectilelua)
+    -   :white_check_mark: [`StateMachine.lua` and GameStates](#https://github.com/jazorhe/GD50-legend-of-zelda#statemachinelua-and-gamestates)
+    -   :white_check_mark: [PlayerStates and EntityStates](#https://github.com/jazorhe/GD50-legend-of-zelda#playerstates-and-entitystates)
+    -   :white_check_mark: [World: `Doorway.lua`, `Dungeon.lua` and `Room.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#world-doorwaylua-dungeonlua-and-roomlua)
 
 
--   [ ] Implement hearts that sometimes drop from enemies at random, which will heal the player for a full heart when picked up (consumed).
+-   :white_check_mark: Implement hearts that sometimes drop from enemies at random, which will heal the player for a full heart when picked up (consumed).
 
 -   [ ] Add pots to the game world (from the tile sheet) at random that the player can pick up, at which point their animation will change to reflect them carrying the pot (shown in the character sprite sheets). The player should not be able to swing their sword when in this state.
 
@@ -273,6 +273,32 @@ love.graphics.setStencilTest()
 ### Regaining Health
 *Implement hearts that sometimes drop from vanquished enemies at random, which will heal the player for a full heart when picked up (consumed). Much of this we’ve already done in Super Mario Bros., so feel free to reuse some of the code in there! Recall that all `Entities` have a `health` field, including the `Player`. The `Player`’s health is measured numerically but represented via hearts; note that he can have half-hearts, which means that each individual heart should be worth 2 points of damage. Therefore, when we want to heal the `Player` for a full heart, be sure to increment health by 2, but be careful it doesn’t go above the visual cap of 6, lest we appear to have a bug! Defining a `GameObject` that has an `onConsume` callback is probably of interest here, which you can refer back to Super Mario Bros. to get a sense of, though feel free to implement however best you see fit!*
 
+-   Added `EntityDeadState.lua`
+-   `EntityDeadState:init()`:simple
+-   `EntityDeadState:enter()`: use `Event.dispatch()`
+-   In `Room.lua`, add `Event.on()`, here is where we spawn a heart:
+    -   One key here is to not spawn heart repeatedly
+    -   Only change `Entity.dead` and change state when its not dead
+    -   Thus heart only spawn once
+-   Heart is a `GameObject`, add `GameObject.inPlay` variable
+-   Define `onCollide()` or `onConsume()` for the heart
+-   Deal with rendering
+
+#### Challenge:
+-   draw spawned hearts smaller
+    -   Add scale factor in `game_objects.lua` and render with it!
+
+-   hearts will have a time to live and will disappear after a while
+    -   **Important**: `if not xxx == nil then` is not going to work because nil is not a value, nil can be treated as false, so above statement actually has opposite result
+    -   can add `GameObject:flash()`
+
+    ```lua
+    function GameObject:flash()
+        if self.timer % 0.2 < 0.01 then
+            self.display = not self.display
+        end
+    end
+    ```
 
 ### Pots and Carrying Pots
 *Add pots to the game world (from the tile sheet) at random that the player can pick up, at which point their animation will change to reflect them carrying the pot (shown in the character sprite sheets). The `player` should not be able to swing their sword when in this state. In most of the Zelda titles, the hero is able to lift pots over his head, which he can then walk around with and throw at walls or enemies as he chooses. Implement this same functionality; you’ll need to incorporate pot `GameObject`s, which should be collidable such that the Player can’t walk through them. When he presses a key in front of them, perhaps `enter` or `return`, he should lift the pot above his head with an animation and then transition into a state where he walks around with the pot above his head. This will entail not only adding some new states for the `Player` but also ensuring a link exists (pun intended) between a pot and the character such that the pot always tracks the player’s position so it can be rendered above his head. Be sure the `Player` cannot swing his sword while in this state, as his hands are full!*
@@ -291,3 +317,4 @@ love.graphics.setStencilTest()
 -   [Push Module for Lua](https://github.com/Ulydev/push)
 -   [GitHub: Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
 -   [Embed youtube to markdown, GitLab, GitHub](http://embedyoutube.org/)
+-   [Markdown Emoji Cheatsheet](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md)
