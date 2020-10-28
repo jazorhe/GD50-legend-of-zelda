@@ -8,6 +8,14 @@ Lecture Notes: [Lecture 5](https://github.com/jazorhe/GD50-legend-of-zelda/blob/
 
 <br>
 
+### Overview
+-   [Our Goal](#our-goal)
+-   [Lecture Notes](#lecture-notes)
+-   [Assignment](#assignment)
+-   [Submission](#submission)
+-   [Useful Links](#useful-links)
+
+
 ## Our Goal
 Our goal this time is to create a game demo with the same top-down perspective world. The game includes auto generated dungeon rooms that will fill up the entire screen size and allow player to travel back and forth between the rooms. There will be enemies in the room to fight, and also switches in the room to unlock doors. Player will have a certain amount of health and when being attacked by an enemy, the player will lose health points and when health reaches 0, it is game over.
 
@@ -15,15 +23,13 @@ Our goal this time is to create a game demo with the same top-down perspective w
 
 
 ## Lecture Notes
-### Overview
-**Topics:**
--   Top-Down Perspective
--   Infinite Dungeon Generation
--   Hitboxes/Hurtboxes
--   Events
--   Screen Scrolling
--   Data-Driven Design
-
+**Topics**:
+-   [Top-Down Perspective](#top-down-perspective)
+-   [Infinite Dungeon Generation](#infinite-dungeon-generation)
+-   [Hitboxes/Hurtboxes](#hitboxeshurtboxes)
+-   [Events](#events)
+-   [Screen Scrolling](#screen-scrolling)
+-   [Data-Driven Design](#data-driven-design)
 
 ### Top-Down Perspective
 Art style:
@@ -124,24 +130,31 @@ NES Homebrew
 <br>
 
 
+<ul class="ck ck-todolist">
+  <li class="ck-todolist__item">
+    <span class="ck-todolist__item-checkbox"></span>
+    <span class="ck-todolist__item-content">Create a strong device passcode</span>
+  </li>
+</ul>
+
 ## Assignment
 ### Objectives
--   :white_check_mark: Read and understand all of the Legend of Zelda source code from Lecture 5.
-    -   :white_check_mark: [`main.lua`](#mainlua)
-    -   :white_check_mark: [`Dependencies.lua`, `constants.lua` and `Util.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#dependencieslua-constantslua-and-utillua)
-    -   :white_check_mark: [`Entity.lua`, `entity_def.lua`, `GameObject.lua` and `game_objects.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#entitylua-entity_deflua-gameobjectlua-and-game_objectslua)
-    -   :white_check_mark: [`Player.lua`, `Animation.lua` and `Hitbox.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#playerlua-animationlua-and-hitboxlua)
-    -   :white_check_mark: [`Projectile.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#projectilelua)
-    -   :white_check_mark: [`StateMachine.lua` and GameStates](#https://github.com/jazorhe/GD50-legend-of-zelda#statemachinelua-and-gamestates)
-    -   :white_check_mark: [PlayerStates and EntityStates](#https://github.com/jazorhe/GD50-legend-of-zelda#playerstates-and-entitystates)
-    -   :white_check_mark: [World: `Doorway.lua`, `Dungeon.lua` and `Room.lua`](#https://github.com/jazorhe/GD50-legend-of-zelda#world-doorwaylua-dungeonlua-and-roomlua)
+-   [x] Read and understand all of the Legend of Zelda source code from Lecture 5.
+    -   [x] [`main.lua`](#mainlua)
+    -   [x] [`Dependencies.lua`, `constants.lua` and `Util.lua`](#dependencieslua-constantslua-and-utillua)
+    -   [x] [`Entity.lua`, `entity_def.lua`, `GameObject.lua` and `game_objects.lua`](#entitylua-entity_deflua-gameobjectlua-and-game_objectslua)
+    -   [x] [`Player.lua`, `Animation.lua` and `Hitbox.lua`](#playerlua-animationlua-and-hitboxlua)
+    -   [x] [`Projectile.lua`](#projectilelua)
+    -   [x] [`StateMachine.lua` and GameStates](#statemachinelua-and-gamestates)
+    -   [x] [PlayerStates and EntityStates](#playerstates-and-entitystates)
+    -   [x] [World: `Doorway.lua`, `Dungeon.lua` and `Room.lua`](#world-doorwaylua-dungeonlua-and-roomlua)
 
 
--   :white_check_mark: Implement hearts that sometimes drop from enemies at random, which will heal the player for a full heart when picked up (consumed).
+-   [x] [Regaining Health](#regaining-health): Implement hearts that sometimes drop from enemies at random, which will heal the player for a full heart when picked up (consumed).
 
--   [ ] Add pots to the game world (from the tile sheet) at random that the player can pick up, at which point their animation will change to reflect them carrying the pot (shown in the character sprite sheets). The player should not be able to swing their sword when in this state.
+-   [ ] [Pots and Carrying Pots](#pots-and-carrying-pots): Add pots to the game world (from the tile sheet) at random that the player can pick up, at which point their animation will change to reflect them carrying the pot (shown in the character sprite sheets). The player should not be able to swing their sword when in this state.
 
--   [ ] When carrying a pot, the player should be able to throw the pot. When thrown, the pot will travel in a straight line based on where the player is looking. When it collides with a wall, travels more than four tiles, or collides with an enemy, it should disappear. When it collides with an enemy, it should do 1 point of damage to that enemy as well.
+-   [ ] [Throwing Pots](#throwing-pots): When carrying a pot, the player should be able to throw the pot. When thrown, the pot will travel in a straight line based on where the player is looking. When it collides with a wall, travels more than four tiles, or collides with an enemy, it should disappear. When it collides with an enemy, it should do 1 point of damage to that enemy as well.
 
 
 <br>
