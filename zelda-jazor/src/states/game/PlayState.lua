@@ -12,10 +12,11 @@ function PlayState:init()
         height = 22,
 
         -- one heart == 2 health
-        health = 6,
 
         -- rendering and collision offset for spaced sprites
-        offsetY = 5
+        offsetY = 5,
+        health = PLAYER_MAX_HEALTH * 2,
+        maxhealth = PLAYER_MAX_HEALTH
     }
 
     self.dungeon = Dungeon(self.player)
@@ -51,7 +52,7 @@ function PlayState:render()
     local healthLeft = self.player.health
     local heartFrame = 1
 
-    for i = 1, 3 do
+    for i = 1, self.player.maxhealth do
         if healthLeft > 1 then
             heartFrame = 5
         elseif healthLeft == 1 then

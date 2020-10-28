@@ -40,7 +40,9 @@ function Room:init(player)
             if heart.inPlay then
                 heart.inPlay = false
                 gSounds['heal']:play()
-                self.player:damage(-1)
+                if self.player.health < self.player.maxhealth * 2 then
+                    self.player:damage(-1)
+                end
             end
         end
 

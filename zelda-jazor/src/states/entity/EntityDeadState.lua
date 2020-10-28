@@ -8,7 +8,7 @@ end
 
 function EntityDeadState:enter(params)
     self.entity.dead = true
-    if math.random(3) == 1 then
+    if math.random(HEART_SPAWN_RATE) == HEART_SPAWN_RATE then
         Event.dispatch('spawn-heart', self.entity)
     end
 end

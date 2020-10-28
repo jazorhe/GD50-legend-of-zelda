@@ -20,6 +20,7 @@ function Entity:init(def)
     self.walkSpeed = def.walkSpeed
 
     self.health = def.health
+    self.maxhealth = def.maxhealth
 
     -- flags for flashing the entity when hit
     self.invulnerable = false
