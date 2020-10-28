@@ -62,8 +62,49 @@ ENTITY_DEFS = {
                 looping = false,
                 texture = 'character-swing-sword'
             },
-            ['pickup-'] = {
-                
+            ['pickup-down'] = {
+                frames = {1, 2, 3},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['pickup-right'] = {
+                frames = {4, 5, 6},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['pickup-up'] = {
+                frames = {7, 8, 9},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['pickup-left'] = {
+                frames = {10, 11, 12},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['pot-down'] = {
+                frames = {1, 2, 3, 4},
+                interval = 0.155,
+                texture = 'character-pot-walk'
+            },
+            ['pot-right'] = {
+                frames = {5, 6, 7, 8},
+                interval = 0.155,
+                texture = 'character-pot-walk'
+            },
+            ['pot-up'] = {
+                frames = {9, 10, 11, 12},
+                interval = 0.155,
+                texture = 'character-pot-walk'
+            },
+            ['pot-left'] = {
+                frames = {13, 14, 15, 16},
+                interval = 0.155,
+                texture = 'character-pot-walk'
             }
         }
     },
