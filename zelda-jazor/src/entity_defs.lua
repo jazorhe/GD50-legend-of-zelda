@@ -61,6 +61,9 @@ ENTITY_DEFS = {
                 interval = 0.05,
                 looping = false,
                 texture = 'character-swing-sword'
+            },
+            ['pickup-'] = {
+                
             }
         }
     },

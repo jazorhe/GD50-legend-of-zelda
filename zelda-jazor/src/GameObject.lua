@@ -6,9 +6,11 @@ function GameObject:init(def, x, y)
 
     self.texture = def.texture
     self.frame = def.frame or 1
+    self.scale = def.scale or 1
+    self.animation = def.animation or nil
 
     -- whether it acts as an obstacle or not
-    self.solid = def.solid
+    self.solid = def.solid or false
 
     self.defaultState = def.defaultState
     self.state = self.defaultState
@@ -19,13 +21,12 @@ function GameObject:init(def, x, y)
     self.y = y
     self.width = def.width
     self.height = def.height
-    self.scale = def.scale
 
     -- default empty collision callback
     self.onCollide = function() end
+    self.display = def.display or true
+    self.ttl = def.ttl or nil
     self.inPlay = true
-    self.display = true
-    self.ttl = def.ttl
     self.timer = 0
 end
 

@@ -7,8 +7,6 @@ GAME_OBJECT_DEFS = {
         height = 16,
         solid = false,
         defaultState = 'unpressed',
-        scale = 1,
-        ttl = nil,
         states = {
             ['unpressed'] = {
                 frame = 2
@@ -39,7 +37,28 @@ GAME_OBJECT_DEFS = {
         }
     },
     ['pot'] = {
-        -- TODO
+        type = 'pot',
+        texture = 'tiles',
+        frame = 33,
+        width = 16,
+        height = 16,
+        solid = true,
+        defaultState = 'idle',
+        ttl = 10,
+        states = {
+            ['idle'] = {
+                frame = 33
+            },
+            ['broken'] = {
+                frame = 52
+            }
+        },
+        animations = {
+            ['breaking'] = {
+                frames = {33, 52},
+                interval = 0.15,
+                texture = 'tiles'
+            }
+        }
     }
-
 }
