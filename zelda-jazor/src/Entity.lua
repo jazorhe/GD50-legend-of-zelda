@@ -105,8 +105,13 @@ function Entity:render(adjacentOffsetX, adjacentOffsetY)
     self.stateMachine:render()
     love.graphics.setColor(1, 1, 1, 1)
     self.x, self.y = self.x - (adjacentOffsetX or 0), self.y - (adjacentOffsetY or 0)
-end
 
-function Entity:die()
+    if DEBUG then
+        if DEBUG_ENTITYBOX then
+            love.graphics.setColor(1, 0, 1, 1)
+            love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
+            love.graphics.setColor(1, 1, 1, 1)
+        end
+    end
 
 end

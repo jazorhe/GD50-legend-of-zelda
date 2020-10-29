@@ -31,6 +31,7 @@ require 'src/states/entity/EntityDeadState'
 require 'src/states/entity/player/PlayerIdleState'
 require 'src/states/entity/player/PlayerSwingSwordState'
 require 'src/states/entity/player/PlayerWalkState'
+require 'src/states/entity/player/PlayerPickupState'
 
 require 'src/states/game/GameOverState'
 require 'src/states/game/PlayState'
@@ -43,6 +44,7 @@ gTextures = {
     ['character-swing-sword'] = love.graphics.newImage('graphics/character_swing_sword.png'),
     ['character-pot-lift'] = love.graphics.newImage('graphics/character_pot_lift.png'),
     ['character-pot-walk'] = love.graphics.newImage('graphics/character_pot_walk.png'),
+    ['character-carry-walk'] = love.graphics.newImage('graphics/character_pot_walk.png'),
     ['hearts'] = love.graphics.newImage('graphics/hearts.png'),
     ['switches'] = love.graphics.newImage('graphics/switches.png'),
     ['entities'] = love.graphics.newImage('graphics/entities.png')
@@ -55,6 +57,8 @@ gFrames = {
     ['entities'] = GenerateQuads(gTextures['entities'], 16, 16),
     ['hearts'] = GenerateQuads(gTextures['hearts'], 16, 16),
     ['switches'] = GenerateQuads(gTextures['switches'], 16, 18)
+    ['switches'] = GenerateQuads(gTextures['switches'], 16, 18),
+    ['character-pot-lift'] = GenerateQuads(gTextures['character-pot-lift'], 16, 32),
 }
 
 gFonts = {
@@ -71,6 +75,8 @@ gSounds = {
     ['music'] = love.audio.newSource('sounds/music.mp3', 'static'),
     ['sword'] = love.audio.newSource('sounds/sword.wav', 'static'),
     ['heal'] = love.audio.newSource('sounds/heal.wav', 'static'),
+    ['pickup'] = love.audio.newSource('sounds/pickup.wav', 'static'),
+    ['pickedup'] = love.audio.newSource('sounds/pickup.wav', 'static'),
     ['hit-enemy'] = love.audio.newSource('sounds/hit_enemy.wav', 'static'),
     ['hit-player'] = love.audio.newSource('sounds/hit_player.wav', 'static'),
     ['door'] = love.audio.newSource('sounds/door.wav', 'static')

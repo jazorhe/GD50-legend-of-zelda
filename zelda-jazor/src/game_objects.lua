@@ -45,8 +45,15 @@ GAME_OBJECT_DEFS = {
         solid = true,
         defaultState = 'idle',
         ttl = 10,
+        canCarry = true,
         states = {
             ['idle'] = {
+                frame = 33
+            },
+            ['carried'] = {
+                frame = 33
+            },
+            ['thrown'] = {
                 frame = 33
             },
             ['broken'] = {

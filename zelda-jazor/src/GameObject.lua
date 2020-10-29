@@ -11,6 +11,7 @@ function GameObject:init(def, x, y)
 
     -- whether it acts as an obstacle or not
     self.solid = def.solid or false
+    self.canCarry = def.canCarry or false
 
     self.defaultState = def.defaultState
     self.state = self.defaultState
