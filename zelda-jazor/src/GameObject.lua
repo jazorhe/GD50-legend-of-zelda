@@ -65,6 +65,15 @@ function GameObject:render(adjacentOffsetX, adjacentOffsetY)
             love.graphics.setColor(1, 1, 1, 1)
         end
     end
+
+    if DEBUG then
+        if DEBUG_OBJECTBOX then
+            love.graphics.setColor(0, 1, 0, 1)
+            love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
+            love.graphics.setColor(1, 1, 1, 1)
+        end
+    end
+
 end
 
 function GameObject:flash()
