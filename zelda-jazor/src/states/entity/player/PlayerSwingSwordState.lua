@@ -56,6 +56,12 @@ function PlayerSwingSwordState:update(dt)
         end
     end
 
+    for k, object in pairs(self.dungeon.currentRoom.objects) do
+        if object.breakable and object:collides(self.swordHitbox) then
+            object:onBreak()
+        end
+    end
+
     if self.player.currentAnimation.timesPlayed > 0 then
         self.player.currentAnimation.timesPlayed = 0
         self.player:changeState('idle')

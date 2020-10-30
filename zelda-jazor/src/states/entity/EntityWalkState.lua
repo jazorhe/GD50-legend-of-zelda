@@ -1,17 +1,10 @@
---[[
-    GD50
-    Legend of Zelda
-
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
-]]
-
 EntityWalkState = Class{__includes = BaseState}
 
-function EntityWalkState:init(entity, dungeon)
+function EntityWalkState:init(entity, currentRoom)
     self.entity = entity
     self.entity:changeAnimation('walk-down')
 
+    self.currentRoom = currentRoom
     self.dungeon = dungeon
 
     -- used for AI control
@@ -59,6 +52,25 @@ function EntityWalkState:update(dt)
             self.bumped = true
         end
     end
+
+    for k, object in pairs(self.currentRoom.objects) do
+        if object.solid and self.entity:collides(object) then
+
+            local collideSide = self.entity:collides(object)
+            if collideSide == 'left' then
+                self.entity.x = object.x - self.entity.width
+            elseif collideSide == 'right' then
+                self.entity.x = object.x + object.width
+            elseif collideSide == 'down' then
+                self.entity.y = object.y + object.height - self.entity.height / 2
+            elseif collideSide == 'up' then
+                self.entity.y = object.y - self.entity.height
+            end
+
+            self.bumped = true
+        end
+    end
+
 end
 
 function EntityWalkState:processAI(params, dt)

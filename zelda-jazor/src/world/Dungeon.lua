@@ -18,29 +18,30 @@ function Dungeon:init(player)
 
     -- trigger camera translation and adjustment of rooms whenever the player triggers a shift
     -- via a doorway collision, triggered in PlayerWalkState
-    Event.on('shift-left', function()
-        self:beginShifting(-VIRTUAL_WIDTH, 0)
+    Event.on('shift-left', function(params)
+        self:beginShifting(-VIRTUAL_WIDTH, 0, params)
     end)
 
-    Event.on('shift-right', function()
-        self:beginShifting(VIRTUAL_WIDTH, 0)
+    Event.on('shift-right', function(params)
+        self:beginShifting(VIRTUAL_WIDTH, 0, params)
     end)
 
-    Event.on('shift-up', function()
-        self:beginShifting(0, -VIRTUAL_HEIGHT)
+    Event.on('shift-up', function(params)
+        self:beginShifting(0, -VIRTUAL_HEIGHT, params)
     end)
 
-    Event.on('shift-down', function()
-        self:beginShifting(0, VIRTUAL_HEIGHT)
+    Event.on('shift-down', function(params)
+        self:beginShifting(0, VIRTUAL_HEIGHT, params)
     end)
 end
 
 --[[
     Prepares for the camera shifting process, kicking off a tween of the camera position.
 ]]
-function Dungeon:beginShifting(shiftX, shiftY)
+function Dungeon:beginShifting(shiftX, shiftY, params)
     self.shifting = true
     self.nextRoom = Room(self.player)
+    table.insert(self.nextRoom.objects, params.object)
 
     -- start all doors in next room as open until we get in
     for k, doorway in pairs(self.nextRoom.doorways) do

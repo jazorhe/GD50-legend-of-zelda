@@ -86,25 +86,65 @@ ENTITY_DEFS = {
                 looping = false,
                 texture = 'character-pot-lift'
             },
-            ['pot-down'] = {
+            ['carry-down'] = {
                 frames = {1, 2, 3, 4},
                 interval = 0.155,
-                texture = 'character-pot-walk'
+                texture = 'character-carry-walk'
             },
-            ['pot-right'] = {
+            ['carry-right'] = {
                 frames = {5, 6, 7, 8},
                 interval = 0.155,
-                texture = 'character-pot-walk'
+                texture = 'character-carry-walk'
             },
-            ['pot-up'] = {
+            ['carry-up'] = {
                 frames = {9, 10, 11, 12},
                 interval = 0.155,
-                texture = 'character-pot-walk'
+                texture = 'character-carry-walk'
             },
-            ['pot-left'] = {
+            ['carry-left'] = {
                 frames = {13, 14, 15, 16},
                 interval = 0.155,
-                texture = 'character-pot-walk'
+                texture = 'character-carry-walk'
+            },
+            ['carry-idle-left'] = {
+                frames = {13},
+                texture = 'character-carry-walk'
+            },
+            ['carry-idle-right'] = {
+                frames = {5},
+                texture = 'character-carry-walk'
+            },
+            ['carry-idle-up'] = {
+                frames = {9},
+                texture = 'character-carry-walk'
+            },
+            ['carry-idle-down'] = {
+                frames = {1},
+                texture = 'character-carry-walk'
+            },
+            ['throwing-down'] = {
+                frames = {3, 2, 1},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['throwing-right'] = {
+                frames = {6, 5, 4},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['throwing-up'] = {
+                frames = {9, 8, 7},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['throwing-left'] = {
+                frames = {12, 11, 10},
+                interval = 0.1,
+                looping = false,
+                texture = 'character-pot-lift'
             }
         }
     },

@@ -26,18 +26,25 @@ function PlayState:init()
         ['walk'] = function() return PlayerWalkState(self.player, self.dungeon) end,
         ['idle'] = function() return PlayerIdleState(self.player) end,
         ['pickup'] = function() return PlayerPickupState(self.player,  self.dungeon) end,
-        ['swing-sword'] = function() return PlayerSwingSwordState(self.player, self.dungeon) end
+        ['carry'] = function() return PlayerCarryState(self.player, self.dungeon) end,
+        ['carry-idle'] = function() return PlayerCarryIdleState(self.player, self.dungeon) end,
+        ['swing-sword'] = function() return PlayerSwingSwordState(self.player, self.dungeon) end,
+        ['throwing'] = function() return PlayerThrowingState(self.player, self.dungeon) end
     }
     self.player:changeState('idle')
 end
 
 function PlayState:enter(params)
-
+    self:init()
 end
 
 function PlayState:update(dt)
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
+    end
+
+    if love.keyboard.wasPressed('r') then
+        gStateMachine:change('play')
     end
 
     self.dungeon:update(dt)

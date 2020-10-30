@@ -29,6 +29,7 @@ function Entity:init(def)
     self.flashTimer = 0
 
     self.dead = false
+    self.carry = nil
 end
 
 function Entity:createAnimations(animations)
@@ -49,8 +50,32 @@ end
     AABB with some slight shrinkage of the box on the top side for perspective.
 ]]
 function Entity:collides(target)
-    return not (self.x + self.width < target.x or self.x > target.x + target.width or
-                self.y + self.height < target.y or self.y > target.y + target.height)
+    local selfY, selfHeight = self.y + self.height / 2, self.height - self.height / 2
+
+    if not (self.x + self.width < target.x or self.x > target.x + target.width or selfY + selfHeight < target.y or selfY > target.y + target.height) then
+
+        local diffX = (self.x + self.width / 2) - (target.x + target.width / 2)
+        local diffY = (selfY + selfHeight / 2) - (target.y + target.height / 2)
+        diffX = math.abs(diffX)
+        diffY = math.abs(diffY)
+
+        if diffX > diffY then
+            if self.x > target.x then
+                return "right"
+            else
+                return "left"
+            end
+        else
+            if self.y > target.y then
+                return "down"
+            else
+                return "up"
+            end
+        end
+
+    end
+
+    return false
 end
 
 function Entity:damage(dmg)
@@ -113,5 +138,4 @@ function Entity:render(adjacentOffsetX, adjacentOffsetY)
             love.graphics.setColor(1, 1, 1, 1)
         end
     end
-
 end
