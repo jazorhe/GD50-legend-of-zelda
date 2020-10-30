@@ -3,6 +3,7 @@ PlayerWalkState = Class{__includes = EntityWalkState}
 function PlayerWalkState:init(player, dungeon)
     self.entity = player
     self.dungeon = dungeon
+    self.currentRoom = self.dungeon.currentRoom
 
     -- render offset for spaced character sprite
     self.entity.offsetY = 5
@@ -36,7 +37,11 @@ function PlayerWalkState:update(dt)
 
     -- perform base collision detection against walls
     EntityWalkState.update(self, dt)
+    self:bumping(dt)
 
+end
+
+function PlayerWalkState:bumping(dt)
     -- if we bumped something when checking collision, check any object collisions
     if self.bumped then
         if self.entity.direction == 'left' then
@@ -49,7 +54,9 @@ function PlayerWalkState:update(dt)
 
                     -- shift entity to center of door to avoid phasing through wall
                     self.entity.y = doorway.y + 4
-                    Event.dispatch('shift-left')
+                    Event.dispatch('shift-left', {
+                        object = self.entity.carry
+                    })
                 end
             end
 
@@ -65,7 +72,9 @@ function PlayerWalkState:update(dt)
 
                     -- shift entity to center of door to avoid phasing through wall
                     self.entity.y = doorway.y + 4
-                    Event.dispatch('shift-right')
+                    Event.dispatch('shift-right', {
+                        object = self.entity.carry
+                    })
                 end
             end
 
@@ -81,7 +90,9 @@ function PlayerWalkState:update(dt)
 
                     -- shift entity to center of door to avoid phasing through wall
                     self.entity.x = doorway.x + 8
-                    Event.dispatch('shift-up')
+                    Event.dispatch('shift-up', {
+                        object = self.entity.carry
+                    })
                 end
             end
 
@@ -97,7 +108,9 @@ function PlayerWalkState:update(dt)
 
                     -- shift entity to center of door to avoid phasing through wall
                     self.entity.x = doorway.x + 8
-                    Event.dispatch('shift-down')
+                    Event.dispatch('shift-down', {
+                        object = self.entity.carry
+                    })
                 end
             end
 

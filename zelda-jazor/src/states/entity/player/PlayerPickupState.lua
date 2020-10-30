@@ -1,72 +1,77 @@
 PlayerPickupState = Class{__includes = BaseState}
 
 function PlayerPickupState:init(player, dungeon)
-    self.player = player
+    self.entity = player
     self.dungeon = dungeon
+    self.currentRoom = self.dungeon.currentRoom
 
-    self.player.offsetY = 5
-    self.player.offsetX = 0
+    self.entity.offsetY = 5
+    self.entity.offsetX = 0
 
-    local direction = self.player.direction
+    local direction = self.entity.direction
 
     local pickupBoxX, pickupBoxY, pickupBoxWidth, pickupBoxHeight
 
     if direction == 'left' then
         pickupBoxWidth = 8
         pickupBoxHeight = 16
-        pickupBoxX = self.player.x - pickupBoxWidth
-        pickupBoxY = self.player.y + 2
+        pickupBoxX = self.entity.x - pickupBoxWidth
+        pickupBoxY = self.entity.y + 2
     elseif direction == 'right' then
         pickupBoxWidth = 8
         pickupBoxHeight = 16
-        pickupBoxX = self.player.x + self.player.width
-        pickupBoxY = self.player.y + 2
+        pickupBoxX = self.entity.x + self.entity.width
+        pickupBoxY = self.entity.y + 2
     elseif direction == 'up' then
         pickupBoxWidth = 16
         pickupBoxHeight = 8
-        pickupBoxX = self.player.x
-        pickupBoxY = self.player.y - pickupBoxHeight
+        pickupBoxX = self.entity.x
+        pickupBoxY = self.entity.y - pickupBoxHeight
     else
         pickupBoxWidth = 16
         pickupBoxHeight = 8
-        pickupBoxX = self.player.x
-        pickupBoxY = self.player.y + self.player.height
+        pickupBoxX = self.entity.x
+        pickupBoxY = self.entity.y + self.entity.height
     end
 
     self.pickupBox = Hitbox(pickupBoxX, pickupBoxY, pickupBoxWidth, pickupBoxHeight)
-    self.player:changeAnimation('pickup-' .. self.player.direction)
+    self.entity:changeAnimation('pickup-' .. self.entity.direction)
 end
 
 function PlayerPickupState:enter(params)
     gSounds['pickup']:stop()
     gSounds['pickup']:play()
 
-    self.player.currentAnimation:refresh()
+    self.entity.currentAnimation:refresh()
 end
 
 function PlayerPickupState:update(dt)
-    for k, object in pairs(self.dungeon.currentRoom.objects) do
-        if object.canCarry and object.collides(self.pickupBox) then
+    for k, object in pairs(self.currentRoom.objects) do
+        if object.canCarry and object:collides(self.pickupBox) then
             gSounds['pickedup']:play()
             -- TODO: picking up
-            if self.player.currentAnimation.timesPlayed > 0 then
-                self.player.currentAnimation.timesPlayed = 0
-                self.player:changeState('carry', object)
+            if self.entity.currentAnimation.timesPlayed > 0 then
+                self.entity.currentAnimation.timesPlayed = 0
+                self.entity.stateMachine:change('carry-idle', {
+                    object = object
+                })
+                object.isCarried = true
+                object.solid = false
             end
         end
     end
 
-    if self.player.currentAnimation.timesPlayed > 0 then
-        self.player.currentAnimation.timesPlayed = 0
-        self.player:changeState('idle')
+    if self.entity.currentAnimation.timesPlayed > 0 then
+        self.entity.currentAnimation.timesPlayed = 0
+        self.entity:changeState('idle')
     end
 end
 
 function PlayerPickupState:render()
-    local anim = self.player.currentAnimation
+    local anim = self.entity.currentAnimation
     love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
-        math.floor(self.player.x - self.player.offsetX),
-        math.floor(self.player.y - self.player.offsetY))
+        math.floor(self.entity.x - self.entity.offsetX),
+        math.floor(self.entity.y - self.entity.offsetY))
 
         if DEBUG then
             if DEBUG_PICKUP then

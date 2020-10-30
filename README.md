@@ -336,18 +336,122 @@ Pots are in `tilesheet.png` as below:
 <img src="zelda-jazor/graphics/character_pot_walk.png" width="200">
 
 **How I achieved**:
-**Challenge myself**:
+-   Randomly spawn pots on ground is easy, what can be improved is if it collides with any other pots or switches, it should respawn somewhere else
+-   Pickup process is similar to sword swing process, player has a pickup box that checks collision with all game objects, and if object is pickable, then Player change to a different state
+-   Player need 3 extra states, `PlayerCarryIdleState`, `PlayerCarryState` and `PlayerPickupState`, this is good because each can deal with their own behaviour, providing the possibility for a state to be stopped
+-   Pot needs to be passed as a `params.object` into the `PlayerCarryIdleState` and `PlayerCarryState` so that it knows to follow the player.
 
+
+**Challenge myself**:
+-   [Pot Collision](https://gamedev.stackexchange.com/questions/61620/reusable-top-down-collision-classhttps://gamedev.stackexchange.com/questions/61620/reusable-top-down-collision-class)
+-   AABB Collision and find out which side is collision side
+-   Because of top down perspective, we want character to be rendered in front of pots
+
+```lua
+function Entity:collides(target)
+    local selfY, selfHeight = self.y + self.height / 2, self.height - self.height / 2
+
+    if not (self.x + self.width < target.x or self.x > target.x + target.width or selfY + selfHeight < target.y or selfY > target.y + target.height) then
+
+        local diffX = (self.x + self.width / 2) - (target.x + target.width / 2)
+        local diffY = (selfY + selfHeight / 2) - (target.y + target.height / 2)
+        diffX = math.abs(diffX)
+        diffY = math.abs(diffY)
+
+        if diffX > diffY then
+            if self.x > target.x then
+                return "right"
+            else
+                return "left"
+            end
+        else
+            if self.y > target.y then
+                return "down"
+            else
+                return "up"
+            end
+        end
+
+    end
+
+    return false
+end
+```
+
+-   Carry the pot to the next room: Pot needs to be passes as `params.object` in between `Room`s, thus can be brought accross in `Dungeon`
+
+```lua
+...
+Event.on('shift-down', function(params)
+    self:beginShifting(0, VIRTUAL_HEIGHT, params)
+end)
+...
+
+function Dungeon:beginShifting(shiftX, shiftY, params)
+    self.shifting = true
+    self.nextRoom = Room(self.player)
+    table.insert(self.nextRoom.objects, params.object)
+    ...
+```
 
 ### Throwing Pots
 *When carrying a pot, the player should be able to throw the pot. When thrown, the pot will travel in a straight line based on where the player is looking. When it collides with a wall, travels more than four tiles, or collides with an enemy, it should disappear. When it collides with an enemy, it should do 1 point of damage to that enemy as well. Carrying the pot is one thing; the next step would be to be able to use the pot as a weapon! Allow the `Player` to throw the pot, effectively turning it into a projectile, and ensure it travels in a straight line depending on where the `Player` is facing when they throw it. When it collides with a wall, an enemy, or if it travels farther than four tiles in that direction, the pot should shatter, disappearing (although an actual shatter animation is optional). If it collides with an enemy, ensure the pot does 1 point of damage. There are many ways you can achieve this; think about how you can extend `GameObject` to fit this use case, perhaps adding a `projectile` field and therefore a `dx` or `dy` to the `GameObject` to allow it to have traveling functionality. Perhaps include a `:fire` method as part of `GameObject` that will trigger this behavior as by passing in said `dx` and `dy` instead. The choice is yours, but `GameObject` is flexible enough to make it work!*
 
 
 **The update needs to do the following:**:
+-   Player can throw the pot
+-   Pot should travel in direction of throw
+-   Pot should kill enemy on the way
+-   Pot should break when hit wall
+-   Pot should break after travelled 4 tiles
+-   Pots and Enemies should remain in map (not to be shoot off screen)
+
 **How I achieved**:
+-   Used tween, probably not the best approach, should use `GameObject:fire()` or a `Projectile` class.
+-   Keeping enemies and pots within the map took a while, but below is how for pots:
+
+```lua
+function GameObject:update(dt)
+    if self.inPlay then
+        self.timer = self.timer + dt
+
+        if self.ttl and self.ttl - self.timer < 4 then
+            if self.ttl < self.timer then
+                self.inPlay = false
+            else
+                self:flash()
+            end
+        end
+    end
+
+    if not self.isCarried then
+        if self.x < MAP_XMIN or self.x + self.width > MAP_XMAX or self.y < MAP_YMIN or self.y + self.height > MAP_YMAX then
+
+            if self.x < MAP_XMIN then
+                self.x = MAP_XMIN
+            elseif self.x + self.width > MAP_XMAX then
+                self.x = MAP_XMAX - self.width
+            elseif self.y < MAP_YMIN then
+                self.y = MAP_YMIN
+            elseif self.y > MAP_YMIN then
+                self.y = MAP_YMAX - self.height
+            end
+
+            self:onBreak()
+        end
+    end
+end
+```
+
+-   For enemies, used `math.max()` and `math.min()` in the tweening when hit
+
+
 **Challenge myself**:
+-   Pot should break on hitting other pots
+-   Animation bounces off when hit, before dying
 
 ## Submission
+[![GD50 - Legend of Zelda Submission](http://img.youtube.com/vi/r8S6raqy6L4/0.jpg)](http://www.youtube.com/watch?v=r8S6raqy6L4 "GD50 - Legend of Zelda Submission")
 
 
 ## Useful Links

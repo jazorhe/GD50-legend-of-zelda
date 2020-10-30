@@ -32,6 +32,9 @@ require 'src/states/entity/player/PlayerIdleState'
 require 'src/states/entity/player/PlayerSwingSwordState'
 require 'src/states/entity/player/PlayerWalkState'
 require 'src/states/entity/player/PlayerPickupState'
+require 'src/states/entity/player/PlayerCarryState'
+require 'src/states/entity/player/PlayerCarryIdleState'
+require 'src/states/entity/player/PlayerThrowingState'
 
 require 'src/states/game/GameOverState'
 require 'src/states/game/PlayState'
@@ -43,7 +46,6 @@ gTextures = {
     ['character-walk'] = love.graphics.newImage('graphics/character_walk.png'),
     ['character-swing-sword'] = love.graphics.newImage('graphics/character_swing_sword.png'),
     ['character-pot-lift'] = love.graphics.newImage('graphics/character_pot_lift.png'),
-    ['character-pot-walk'] = love.graphics.newImage('graphics/character_pot_walk.png'),
     ['character-carry-walk'] = love.graphics.newImage('graphics/character_pot_walk.png'),
     ['hearts'] = love.graphics.newImage('graphics/hearts.png'),
     ['switches'] = love.graphics.newImage('graphics/switches.png'),
@@ -56,9 +58,9 @@ gFrames = {
     ['character-swing-sword'] = GenerateQuads(gTextures['character-swing-sword'], 32, 32),
     ['entities'] = GenerateQuads(gTextures['entities'], 16, 16),
     ['hearts'] = GenerateQuads(gTextures['hearts'], 16, 16),
-    ['switches'] = GenerateQuads(gTextures['switches'], 16, 18)
     ['switches'] = GenerateQuads(gTextures['switches'], 16, 18),
     ['character-pot-lift'] = GenerateQuads(gTextures['character-pot-lift'], 16, 32),
+    ['character-carry-walk'] = GenerateQuads(gTextures['character-carry-walk'], 16, 32)
 }
 
 gFonts = {
@@ -79,7 +81,9 @@ gSounds = {
     ['pickedup'] = love.audio.newSource('sounds/pickup.wav', 'static'),
     ['hit-enemy'] = love.audio.newSource('sounds/hit_enemy.wav', 'static'),
     ['hit-player'] = love.audio.newSource('sounds/hit_player.wav', 'static'),
-    ['door'] = love.audio.newSource('sounds/door.wav', 'static')
+    ['door'] = love.audio.newSource('sounds/door.wav', 'static'),
+    ['break'] = love.audio.newSource('sounds/break.wav', 'static'),
+    ['throw'] = love.audio.newSource('sounds/throw.wav', 'static')
 }
 
 gStateMachine = StateMachine {

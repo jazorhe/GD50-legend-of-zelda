@@ -60,7 +60,7 @@ end
 function Room:generateEntities()
     local types = {'skeleton', 'slime', 'bat', 'ghost', 'spider'}
 
-    for i = 1, 10 do
+    for i = 1, 8 do
         local type = types[math.random(#types)]
 
         table.insert(self.entities, Entity {
@@ -80,7 +80,7 @@ function Room:generateEntities()
         })
 
         self.entities[i].stateMachine = StateMachine {
-            ['walk'] = function() return EntityWalkState(self.entities[i]) end,
+            ['walk'] = function() return EntityWalkState(self.entities[i], self) end,
             ['idle'] = function() return EntityIdleState(self.entities[i]) end,
             ['dead'] = function() return EntityDeadState(self.entities[i]) end
         }
@@ -93,6 +93,11 @@ end
     Randomly creates an assortment of obstacles for the player to navigate around.
 ]]
 function Room:generateObjects()
+    self:generateSwitch()
+    self:generatePots()
+end
+
+function Room:generateSwitch()
     table.insert(self.objects, GameObject(
         GAME_OBJECT_DEFS['switch'],
         math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
@@ -116,6 +121,28 @@ function Room:generateObjects()
 
             gSounds['door']:play()
         end
+    end
+end
+
+function Room:generatePots()
+    local potNum = math.random(3)
+
+    for n = 1, potNum do
+
+        local x = nil
+        local y = nil
+
+        while not x or not y or (x == self.objects[1].x and y == self.objects[1].y) do
+            x = math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
+            VIRTUAL_WIDTH - TILE_SIZE * 2 - 16)
+            y = math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
+            VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
+        end
+
+
+        table.insert(self.objects, GameObject(
+            GAME_OBJECT_DEFS['pot'], x, y
+        ))
     end
 end
 
@@ -195,6 +222,45 @@ function Room:update(dt)
         if self.player:collides(object) then
             object:onCollide()
         end
+
+        if object.isCarried then
+            object.x = self.player.x
+            object.y = self.player.y - 10
+        end
+
+        if object.isFlying then
+            for k, entity in pairs(self.entities) do
+                if object:collides(entity) then
+
+                    local newX = nil
+                    local newY = nil
+
+                    if object.isFlying == 'left' then
+                        newX = math.max(entity.x - THROW_POWER * TILE_SIZE, MAP_XMIN)
+                    elseif object.isFlying == 'right' then
+                        newX = math.min(entity.x + THROW_POWER * TILE_SIZE, MAP_XMAX - TILE_SIZE)
+                    elseif object.isFlying == 'up' then
+                        newY = math.max(entity.y - THROW_POWER * TILE_SIZE, MAP_YMIN)
+                    elseif object.isFlying == 'down' then
+                        newY = math.min(entity.y + THROW_POWER * TILE_SIZE, MAP_YMAX - TILE_SIZE)
+                    end
+
+                    Timer.tween(0.3, {
+                        [entity] = {x = newX, y = newY}
+                    }):finish(
+                    function()
+                        entity:damage(1)
+                    end)
+                end
+            end
+
+            for k, object1 in pairs(self.objects) do
+                if object:collides(object1) and object1.breakable then
+                    object1:onBreak()
+                end
+            end
+        end
+
     end
 end
 
@@ -215,7 +281,9 @@ function Room:render()
     end
 
     for k, object in pairs(self.objects) do
-        if object.inPlay then object:render(self.adjacentOffsetX, self.adjacentOffsetY) end
+        if object.inPlay and not object.isCarried then
+            object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        end
     end
 
     for k, entity in pairs(self.entities) do
@@ -245,6 +313,14 @@ function Room:render()
 
     if self.player then
         self.player:render()
+    end
+
+    for k, object in pairs(self.objects) do
+        if object.inPlay and object.isCarried then
+            object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        elseif object.inPlay and not object.isCarried and object.isFlying == 'down' then
+            object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        end
     end
 
     love.graphics.setStencilTest()
